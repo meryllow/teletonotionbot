@@ -49,7 +49,7 @@ logger = logging.getLogger(__name__)
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 
 
-NAME, LOCATION, BIO = range(3)
+NAME, LOCATION = range(2)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Starts the conversation and asks the user about their gender."""
