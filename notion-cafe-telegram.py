@@ -84,6 +84,7 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Stores the location and updates the notion database."""
     user = update.message.from_user
     global cafe_location
+    global cafe_name
     cafe_location = update.message.text
     logger.info("Location of cafe: %s", cafe_location)
 
@@ -136,10 +137,12 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     await update.message.reply_text(
         "yay! added to the notion database"
     )
+    cafe_location = None
+    cafe_name = None
     logger.info("Request response: %s", response.text)
 
 
-    return LOCATION
+    return ConversationHandler.END
 
 async def cancel(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Cancels and ends the conversation."""
