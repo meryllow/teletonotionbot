@@ -70,6 +70,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 async def name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Stores the cafe name and asks for a location."""
     user = update.message.from_user
+    global cafe_name
     cafe_name = update.message.text
     logger.info("Name of cafe: %s", update.message.text)
     await update.message.reply_text(
@@ -82,6 +83,7 @@ async def name(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 async def location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     """Stores the location and updates the notion database."""
     user = update.message.from_user
+    global cafe_location
     cafe_location = update.message.text
     logger.info("Location of cafe: %s", cafe_location)
 
@@ -94,54 +96,11 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         "content-type": "application/json"
     }
 
-    # params = {
-    #     "database_id": os.getenv("NOTION_DATABASE_ID"),
-    #     "properties": {
-    #         "title":[
-    #         {
-    #             "type": "text",
-    #             "text": {
-    #                 "content": cafe_name
-    #             }
-    #         }
-    #         ],
-    #         "pyuU": {
-    #             "rich_text": [
-    #                 {
-    #                     "text": {
-    #                         "content": cafe_location
-    #                     }
-    #                 }
-    #             ]
-    #         }
-    #     }
-    # }
-
     params = {
         "parent": {
             "database_id": os.getenv("NOTION_DATABASE_ID")
         },
         "properties": {
-            "conquered?": {
-                "id": "G%3ApN",
-                "type": "checkbox",
-                "checkbox": False
-            },
-            "remarks": {
-                "id": "%5EA%7DO",
-                "type": "rich_text",
-                "rich_text": []
-            },
-            "rating": {
-                "id": "%60W%3FY",
-                "type": "select",
-                "select": None
-            },
-            "link": {
-                "id": "lKzO",
-                "type": "url",
-                "url": None
-            },
             "location": {
                 "id": "pyuU",
                 "type": "rich_text",
@@ -169,7 +128,9 @@ async def location(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
         }
     }
 
-    response = requests.post(url, headers=headers, params=params)
+    print(params)
+
+    response = requests.post(url, headers=headers, json=params)
 
     
     await update.message.reply_text(
